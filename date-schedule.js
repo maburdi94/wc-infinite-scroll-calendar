@@ -2,15 +2,7 @@
 
 class DateScheduler extends HTMLElement {
 
-    #date;
-
-    set date(date) {
-        this.#date = date ? (date instanceof Date) ? date : new Date(date) : new Date();
-        this.render();
-    }
-
     connectedCallback() {
-        this.date = this.getAttribute('date');
 
         let observer = new IntersectionObserver((entries) => {
             let el = entries[0];
@@ -25,8 +17,6 @@ class DateScheduler extends HTMLElement {
                 observer.observe(this.lastElementChild);
             }
 
-        }, {
-            root: this
         });
 
         observer.observe(this.firstElementChild);
@@ -34,14 +24,15 @@ class DateScheduler extends HTMLElement {
     }
 
     render() {
+        let attr = this.getAttribute('date');
+        let date = attr ? new Date(attr) : new Date();
+
         this.innerHTML = '';
 
-        for (let i = -5; i <= 5; i++) {
-
-            let date = new Date(this.#date.getTime());
-            date.setMonth(date.getMonth() + i);
-
+        date.setMonth(date.getMonth() - 5);
+        for (let i = 0; i < 11; i++) {
             this.appendChild(this.renderElement(date));
+            date.setMonth(date.getMonth() + 1);
         }
 
         this.children[5].scrollIntoView();
@@ -157,6 +148,8 @@ class DateScheduler extends HTMLElement {
         this.style.overflowY = 'auto';
         this.style.scrollSnapType = 'y mandatory';
         this.style.height = '400px';
+
+        this.render();
     }
 
 }
