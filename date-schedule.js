@@ -86,12 +86,9 @@ class DateScheduler extends HTMLElement {
 
 
         const NUM_DAYS_IN_MONTH = new Date(year, month + 1, 0).getDate();
-        const DATES = Array.apply(null, Array(NUM_DAYS_IN_MONTH))
-            .map((_, i) =>
-                new Date(year, month, i + 1));
+        for(let i = 1; i <= NUM_DAYS_IN_MONTH; i++) {
 
-
-        for(let date of DATES) {
+            let date = new Date(year, month, i);
 
             let cell = document.createElement('div');
             cell.style.borderTop = '1px solid lightgray';
