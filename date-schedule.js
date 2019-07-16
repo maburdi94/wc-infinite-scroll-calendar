@@ -49,10 +49,16 @@ class DateScheduler extends HTMLElement {
         let container = document.createElement('div');
         container.classList.add('month');
 
+        // TODO: Add scroll-snaps. Currently, broken
+        // container.style.scrollSnapAlign = 'start';
+
         let monthLabel = document.createElement('h2');
-        monthLabel.innerText = new Date(year, month).toLocaleString('en-us', { month: 'long', year: 'numeric' });
+
+        monthLabel.innerText = date.toLocaleString('en-us', { month: 'long', year: 'numeric' });
+
 
         let header = document.createElement('header');
+
         header.style.display = 'grid';
         header.style.gridTemplateColumns = 'repeat(7, 1fr)';
         header.style.justifyItems = 'center';
@@ -67,8 +73,10 @@ class DateScheduler extends HTMLElement {
             <span>S</span>
         `;
 
+
         let grid = document.createElement('div');
         grid.classList.add('dates');
+
         grid.style.display = 'grid';
         grid.style.padding = '.1em';
         grid.style.gridTemplateColumns = 'repeat(7, 1fr)';
@@ -82,24 +90,25 @@ class DateScheduler extends HTMLElement {
             let date = new Date(year, month, i);
 
             let cell = document.createElement('div');
+            cell.classList.add('date');
+
             cell.style.borderTop = '1px solid lightgray';
             cell.style.cursor = 'pointer';
             cell.style.padding = '25% 0';
 
-            cell.classList.add('date');
-            cell.innerText = date.getDate();
+            cell.innerText = i;
 
 
             if ((date && TODAY)
-                && (date.getDate() === TODAY.getDate())
+                && (i === TODAY.getDate())
                 && ((date.getMonth() === TODAY.getMonth())
                 && (date.getFullYear() === TODAY.getFullYear()))) {
                 cell.style.color = 'red';
                 cell.classList.add('today');
             }
 
-            if (date.getDate() === 1) {
-                cell.style.gridColumnStart = new Date(year, month, 1).getDay() + 1;
+            if (i === 1) {
+                cell.style.gridColumnStart = date.getDay() + 1;
             }
 
             grid.appendChild(cell);
@@ -145,9 +154,11 @@ class DateScheduler extends HTMLElement {
 
         this.style.display = 'block';
         this.style.fontSize = 'inherit';
-        this.style.overflowY = 'auto';
-        this.style.scrollSnapType = 'y mandatory';
+        this.style.overflowY = 'scroll';
         this.style.height = '400px';
+
+        // TODO: Fix scroll snaps
+        // this.style.scrollSnapType = 'y mandatory';
 
         this.render();
     }
