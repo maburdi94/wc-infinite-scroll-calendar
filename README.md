@@ -1,4 +1,4 @@
-# wc-infinite-scroll-calendar
+# Web Component Infinite Scrolling Calendar
 An infinite scroll calendar using vanilla JS
 
 **[Fiddle](https://jsfiddle.net/maburdi/93ndowm0/9/)**     
