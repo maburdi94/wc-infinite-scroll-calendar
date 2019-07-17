@@ -24,14 +24,14 @@ class DateScheduler extends HTMLElement {
     }
 
     render() {
-        let attr = this.getAttribute('date');
-        let date = attr ? new Date(attr) : new Date();
+        let date = this.getAttribute('date');
+        date = date ? new Date(date) : new Date();
 
         this.innerHTML = '';
 
         date.setMonth(date.getMonth() - 5);
         for (let i = 0; i < 11; i++) {
-            this.appendChild(this.renderElement(date));
+            this.appendChild(DateScheduler.renderElement(date));
             date.setMonth(date.getMonth() + 1);
         }
 
@@ -39,30 +39,30 @@ class DateScheduler extends HTMLElement {
     }
 
 
-    renderElement(date) {
+    static renderElement(date) {
 
         const TODAY = new Date();
 
         let year = date.getFullYear();
         let month = date.getMonth();
 
+
+        date.setUTCHours(0,0,0,0);
+
         let container = document.createElement('div');
         container.classList.add('month');
 
-        // TODO: Add scroll-snaps. Currently, broken
-        // container.style.scrollSnapAlign = 'start';
 
         let monthLabel = document.createElement('h2');
-
+        monthLabel.classList.add('label');
         monthLabel.innerText = date.toLocaleString('en-us', { month: 'long', year: 'numeric' });
 
 
         let header = document.createElement('header');
+        header.classList.add('weekdays');
 
         header.style.display = 'grid';
         header.style.gridTemplateColumns = 'repeat(7, 1fr)';
-        header.style.justifyItems = 'center';
-        header.style.padding = '1em 0 .5em';
         header.innerHTML = `
             <span>S</span>
             <span>M</span>
@@ -78,10 +78,8 @@ class DateScheduler extends HTMLElement {
         grid.classList.add('dates');
 
         grid.style.display = 'grid';
-        grid.style.padding = '.1em';
         grid.style.gridTemplateColumns = 'repeat(7, 1fr)';
         grid.style.gridAutoRows = '1fr';
-        grid.style.textAlign = 'center';
 
 
         const NUM_DAYS_IN_MONTH = new Date(year, month + 1, 0).getDate();
@@ -92,19 +90,21 @@ class DateScheduler extends HTMLElement {
             let cell = document.createElement('div');
             cell.classList.add('date');
 
-            cell.style.borderTop = '1px solid lightgray';
-            cell.style.cursor = 'pointer';
-            cell.style.padding = '25% 0';
-
             cell.innerText = i;
 
 
-            if ((date && TODAY)
-                && (i === TODAY.getDate())
+
+            if ((i === TODAY.getDate())
                 && ((date.getMonth() === TODAY.getMonth())
                 && (date.getFullYear() === TODAY.getFullYear()))) {
-                cell.style.color = 'red';
                 cell.classList.add('today');
+            }
+
+            if (this.#date
+                && (i === this.#date.getDate())
+                && ((date.getMonth() === this.#date.getMonth())
+                    && (date.getFullYear() === this.#date.getFullYear()))) {
+                cell.classList.add('active');
             }
 
             if (i === 1) {
@@ -124,7 +124,6 @@ class DateScheduler extends HTMLElement {
         return container;
     }
 
-
     update(target) {
 
         let date = new Date(target.dataset.date);
@@ -133,32 +132,27 @@ class DateScheduler extends HTMLElement {
         for (let i = 0; i < 5; i++) {
 
             if (SCROLL_UP) {
-                this.removeChild(this.lastChild);
-
                 date.setMonth(date.getMonth() - 1);
 
-                this.insertBefore(this.renderElement(date), this.firstChild);
+                this.removeChild(this.lastChild);
+                this.insertBefore(DateScheduler.renderElement(date), this.firstChild);
 
             } else { // SCROLL_DOWN
-                this.removeChild(this.firstChild);
-
                 date.setMonth(date.getMonth() + 1);
 
-                this.appendChild(this.renderElement(date));
+                this.removeChild(this.firstChild);
+                this.appendChild(DateScheduler.renderElement(date));
             }
         }
+
     }
+
 
     constructor() {
         super();
 
         this.style.display = 'block';
-        this.style.fontSize = 'inherit';
         this.style.overflowY = 'scroll';
-        this.style.height = '400px';
-
-        // TODO: Fix scroll snaps
-        // this.style.scrollSnapType = 'y mandatory';
 
         this.render();
     }
