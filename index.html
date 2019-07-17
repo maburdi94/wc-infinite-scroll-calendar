@@ -14,16 +14,75 @@
         }
 
         body {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+
             padding: 1em;
             font-size: 18px;
         }
+
+
+        x-schedule-date, x-schedule-time {
+            height: 400px;
+        }
+
+        .weekdays {
+            justify-items: center;
+            padding: 1em 0 .5em;
+        }
+        .dates {
+            padding: .1em;
+            text-align: center;
+        }
+        .date {
+            position: relative;
+            border-top: 1px solid lightgray;
+            cursor: pointer;
+            padding: 25% 0;
+        }
+        .date.active::before {
+            content: '';
+            display: block;
+            position: absolute;
+
+            width: 50%;
+            height: 50%;
+            background-color: red;
+            border-radius: 8px;
+            top: 25%;
+            left: 25%;
+
+            z-index: -1;
+        }
+
+        .date.today {
+            color: red;
+        }
+        .date.active {
+            color: white;
+        }
+
+
+
+        .hour {
+            padding: .25em .25em 1em;
+        }
+        .day.today h2 {
+            color: red;
+        }
+
+
     </style>
 </head>
 <body>
 
     <x-schedule-date></x-schedule-date>
+    <x-schedule-time></x-schedule-time>
+
 
     <script src="date-schedule.js"></script>
+    <script src="time-schedule.js"></script>
+
 
 </body>
 </html>
